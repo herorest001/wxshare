@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+
+        <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+        <script>
+                // 请求签名
+                $.ajax({
+                  url: "/signture",
+                  type: 'post',
+                  data: { url: location.href.split('#')[0] },
+                  success:function(res){
+                    wx.config({
+                      debug: false,
+                      appId: 'wxa2c416de84300ee5',
+                      timestamp: res.timestamp,
+                      nonceStr: res.nonceStr,
+                      signature: res.signature,
+                      jsApiList: [
+                        'checkJsApi',
+                        'onMenuShareTimeline',
+                        'onMenuShareAppMessage',
+                        'onMenuShareQQ'
+                      ]
+                    }); 
+                    wx.ready(function () {
+                      var shareData = {
+                        title: document.title,
+                        desc: getDesc(),
+                        link: res.url,
+                        imgUrl: getImage()
+                      };
+                      wx.onMenuShareAppMessage(shareData);
+                      wx.onMenuShareTimeline(shareData);
+                      wx.onMenuShareQQ(shareData);
+                    });
+                    wx.error(function (res) {
+                      alert(res.errMsg);  // 正式环境记得关闭啊！！！！
+                    });
+                  }
+                });
+                // 获取描述字段方法
+                function getDesc() {
+                  var meta = document.getElementsByTagName("meta");
+                  for (var i=0;i<meta.length;i++){
+                    if(typeof meta[i].name!="undefined"&&meta[i].name.toLowerCase()=="description"){
+                      return meta[i].content;
+                    }
+                  }
+                };
+                // 获取图片
+                function getImage() {
+                  return 'http://'+location.host+'/images/logo.png';
+                };
+              </script>
+    </body>
+</html>

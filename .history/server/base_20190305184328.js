@@ -1,0 +1,7 @@
+const wxshare = {
+
+};
+
+module.exports = {
+
+}
